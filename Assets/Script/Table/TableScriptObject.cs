@@ -7,6 +7,7 @@ namespace Script.Table
     [Serializable]
     public class TableScriptObject : ScriptableObject
     {
+        public const string ADDRESSABLE_PATH = "Assets/Addressables/Table/TableDatas.asset";
         public List<ScriptableObject> nodes = new List<ScriptableObject>();
 
         public T GetTableObject<T>() where T : class
@@ -18,21 +19,16 @@ namespace Script.Table
 
         public void AllOnLoadCompleteCall()
         {
-            List<IBaseTableNode> sortingList = new List<IBaseTableNode>();
-            for (int i = 0; i < nodes.Count; i++)
-                sortingList.Add(nodes[i] as IBaseTableNode);
-
-            for (int i = 0; i < sortingList.Count; i++)
-                sortingList[i].OnLoadComplete();
+            foreach (var so in nodes)
+                if (so is IBaseTableNode _node)
+                    _node.OnLoadComplete();
         }
 
         public void CloseAllTable()
         {
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                if (nodes[i] is IBaseTableNode target)
+            foreach (var so in nodes)
+                if (so is IBaseTableNode target)
                     target.ClearTable();
-            }
         }
     }
 }

@@ -54,24 +54,21 @@ namespace Editor.Table.ExcelToSO
         }
 
         private const string EXCEL_FOLDER_PATH = "Assets/Excels";
-        private const string OUTPUT_PATH = "Assets/Resources/Table/TableDatas.asset";
+        private const string OUTPUT_PATH = "Assets/Addressables/Table/TableDatas.asset";
         private const string PARSER_OUTPUT_PATH = "Assets/Script/TableParser/{0}.cs";
-
         private const string XLSM = ".xlsm";
         private const string XLSX = ".xlsx";
     
         private const int NAME_IDX = 0;
         private const int DATA_START_HORIZONTAL_INDEX = 0;
-
         private const int DATA_LOAD_START_LINE_INDEX = 1;
-
         private const int TABLE_NAME_ROW_INDEX = 0;
 
         // 테이블 파서를 뽑거나 테이블 데이터를 뽑아내는 과정에서 얻게된 정보들을 담아놓고 어느정보까지 보여줘야할까..? 고민중...
         private static readonly List<string> s_WorkingList = new List<string>();
         private readonly GUILayoutOption r_GUIOption = GUILayout.Height(50f);
 
-        [MenuItem("Y/Q")]
+        [MenuItem("Table/Table Help")]
         public static void OpenWindow()
         {
             GetWindow<TableEditorToolWindow>("Table Tools");
@@ -124,7 +121,7 @@ namespace Editor.Table.ExcelToSO
                     var _sheet = _workBook.GetSheetAt(sheetIndex);
                     var _sheenName = _sheet.SheetName;
 
-                    if (string.IsNullOrEmpty(_sheenName) != false || _sheenName[0] == UnderBar)
+                    if (string.IsNullOrEmpty(_sheenName) || _sheenName[0] == UnderBar)
                         continue;
                     
                     if (string.IsNullOrEmpty(_firstSheetName) == true)
@@ -637,8 +634,7 @@ namespace Editor.Table.ExcelToSO
         private class TableCodeMake
         {
             private const string codeTemplate = 
-@"
-using UnityEngine;
+@"using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Script.Table;
@@ -687,8 +683,8 @@ namespace Script.TableParser
     }
 }";
 
-            private const string RE_MAKE_MEMBER_TEMPLATE = @"
-    //StartDataRecord//
+            private const string RE_MAKE_MEMBER_TEMPLATE = 
+@"//StartDataRecord//
     [Serializable]
     public record $CLASSDATA
     {
