@@ -23,7 +23,7 @@ namespace Script.Base.MonoSingleTone
                     
                     if (m_Instance == null)
                     {
-                        var _go = new GameObject($"[{typeof(T)} SingleTone]");
+                        var _go = new GameObject($"[{typeof(T).Name} SingleTone]");
                         m_Instance = _go.AddComponent<T>();
                         DontDestroyOnLoad(_go);
                         m_Instance.Logger.L("Create Mono SingleTone");
@@ -57,7 +57,7 @@ namespace Script.Base.MonoSingleTone
 
         public void Close()
         {
-            if (!m_Instance)
+            if (!m_IsInit)
                 return;
 
             m_IsInit = false;

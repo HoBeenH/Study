@@ -64,7 +64,6 @@ namespace Editor.Table.ExcelToSO
         private const int DATA_LOAD_START_LINE_INDEX = 1;
         private const int TABLE_NAME_ROW_INDEX = 0;
 
-        // 테이블 파서를 뽑거나 테이블 데이터를 뽑아내는 과정에서 얻게된 정보들을 담아놓고 어느정보까지 보여줘야할까..? 고민중...
         private static readonly List<string> s_WorkingList = new List<string>();
         private readonly GUILayoutOption r_GUIOption = GUILayout.Height(50f);
 
@@ -280,7 +279,6 @@ namespace Editor.Table.ExcelToSO
                     }
                     catch
                     {
-
                         Debug.LogError($"테이블 파서 에러 :: 데이터 형식이 테이블과 맞지 않습니다!  :: {_className} ::{_targetFieldInfo.Name}:: {_checkType}:: {_newData}");
                     }
                 }
@@ -666,7 +664,7 @@ namespace Script.TableParser
         {
             $CLASSDATA _result = TableDataList.Find(obj => obj.ID == key);
             if (_result == null)
-                Debug.LogError($""No Key. Table : {nameof($CLASS)} Key : {key.ToString()}"");
+                Logger.E($""No Key. Table : {nameof($CLASS)} Key : {key.ToString()}"");
     
             return _result;
         }

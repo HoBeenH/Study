@@ -12,6 +12,7 @@ namespace Script.Table
         public List<T> TableDataList = new List<T>();
         public ILogger<T> Logger => this;
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
         public void SetTableData(List<object> dataList)
         {
             for (int i = 0; i < dataList.Count; i++)

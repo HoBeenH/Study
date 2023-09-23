@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Script.Custom.CustomEnum;
 using Script.Custom.Extensions;
 using Script.EnumField;
 using Script.Table;
@@ -13,8 +14,6 @@ namespace Script.TableParser
     {
         [SerializeField] public EAddressableID ID;
 		[SerializeField] public string Path;
-		[SerializeField] public bool IsPool;
-		[SerializeField] public EAssetType AssetType;
     }
     //EndDataRecord//
 
@@ -36,26 +35,23 @@ namespace Script.TableParser
                     continue;
 
                 if (!m_DicData.TryAdd(data.ID, data))
-                {
-                    
-                }
+                    Logger.E($"Already Contains Key {data.ID.ToString()}");
             }
         }
     
         public override void ClearTable()
         {
-            
+            m_DicData.Clear();
         }
     
         public AddressableTableData GetData(EAddressableID key)
         {
-            AddressableTableData _result = TableDataList.Find(obj => obj.ID == key);
-            if (_result == null)
-                Debug.LogError($"No Key. Table : {nameof(AddressableTable)} Key : {key.ToString()}");
-    
+            if (!m_DicData.TryGetValue(key, out var _result))
+                Logger.E($"Can't Find {key.ToString()}");
+
             return _result;
         }
-    
+        
         public List<AddressableTableData> GetDataList()
         {
             return TableDataList;
@@ -63,7 +59,7 @@ namespace Script.TableParser
     
         public AddressableTableData GetEditorData(string key)
         {
-            return TableDataList.Find(obj => string.Equals(obj.ID.ToString(), key));
+            return TableDataList.Find(obj => string.Equals(obj.ID.ToInt().ToString(), key));
         }
     }
 }

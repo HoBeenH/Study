@@ -1,8 +1,9 @@
 ﻿using System;
 using Script.Base.Logger;
-using Script.Custom.CustomDebug;
-using Script.Manager;
+using Script.Manager.ResourceMgr;
 using UnityEngine.Pool;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using Object = UnityEngine.Object;
 
 namespace Script.Base.Pool
 {
@@ -25,42 +26,37 @@ namespace Script.Base.Pool
             m_Pool = new ObjectPool<T>(Create, Get, Release, Destroy);
         }
 
-        private T Create() => ResourceManager.Instance.LoadCompSync<T>(r_Path);
+        private T Create() => ResourceManager.LoadCompSync<T>(r_Path, null,
+            new InstantiationParameters(ResourceManager.GetPoolRoot(), false));
+
+        private void Get(T obj)
+        {
+            obj.Get();
+            obj.SetHandler(this);
+        }
+
+        public void Release(Object obj)
+        {
+            var _asT = obj as T;
+            if (_asT != null)
+            {
+                _asT.Clear();
+                _asT.transform.SetParent(ResourceManager.GetPoolRoot());
+            }
+        }
+
+        private void Destroy(T obj) => ResourceManager.Instance.ReleaseGO(obj);
 
         public T GetObj() => m_Pool.Get();
 
         public void ReleaseObj(T obj) => m_Pool.Release(obj);
 
         public void Clear() => Dispose();
-        
+
         public void Dispose()
         {
-            m_Pool.Clear();
+            m_Pool.Dispose();
             m_Pool = null;
-        }
-
-        private void Get(T obj)
-        {
-            if (obj == null)
-                return;
-
-            obj.Get();
-        }
-
-        private void Release(T obj)
-        {
-            if (obj == null)
-                return;
-
-            obj.Clear();
-        }
-
-        private void Destroy(T obj)
-        {
-            if (obj == null)
-                return;
-
-            ResourceManager.Instance.ReleaseGO(obj);
         }
     }
 }

@@ -1,6 +1,29 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8282117195543700634
+--- !u!114 &-6599868491640314261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb4c7373c21e48f4a802114de5d82f16, type: 3}
+  m_Name: StringTable
+  m_EditorClassIdentifier: 
+  TableDataList:
+  - ID: Notice
+    KR: "\uC54C\uB9BC"
+  - ID: ArcherTower
+    KR: "\uAD81\uC218 \uD0C0\uC6CC"
+  - ID: Yes
+    KR: "\uB124"
+  - ID: No
+    KR: "\uC544\uB2C8\uC624"
+  - ID: BuildConfirm
+    KR: "\uC815\uB9D0 {0}\uC744(\uB97C) \uAC74\uC124 \uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+--- !u!114 &-2106895039051976571
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15,8 +38,12 @@ MonoBehaviour:
   TableDataList:
   - ID: 1
     Path: Assets/Addressables/Test/Test.prefab
-    IsPool: 0
-    AssetType: 1
+  - ID: 2
+    Path: Assets/Addressables/Prefab/BuildPoint.prefab
+  - ID: 3
+    Path: Assets/Addressables/Prefab/ArcherTower_Lv1.prefab
+  - ID: 4
+    Path: Assets/Addressables/Prefab/UI/Popup/MessageBox/Popup_MessageBox.prefab
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,4 +57,23 @@ MonoBehaviour:
   m_Name: TableDatas
   m_EditorClassIdentifier: 
   nodes:
-  - {fileID: -8282117195543700634}
+  - {fileID: -2106895039051976571}
+  - {fileID: 8102575420657294544}
+  - {fileID: -6599868491640314261}
+--- !u!114 &8102575420657294544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc08e2b91b52ff8439b90276e40953b4, type: 3}
+  m_Name: BuildingTable
+  m_EditorClassIdentifier: 
+  TableDataList:
+  - ID: 1
+    GroupID: 1
+    AddressableID: 3
+    Lv: 1
