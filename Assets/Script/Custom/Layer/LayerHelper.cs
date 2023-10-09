@@ -1,4 +1,4 @@
-using Script.EnumField;
+using Script.Parameter.Enum;
 using UnityEngine;
 
 namespace Script.Custom.Layer

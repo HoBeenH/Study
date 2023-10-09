@@ -1,5 +1,5 @@
 using System;
-using Script.EnumField;
+using Script.Parameter.Enum;
 using UnityEngine;
 
 namespace Script.Custom.Extensions

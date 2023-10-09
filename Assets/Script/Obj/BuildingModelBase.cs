@@ -49,24 +49,20 @@ namespace Script.Obj
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            D.L("Enter");
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            D.L("Exit");
         }
 
         // 눌렀을때
         public void OnPointerDown(PointerEventData eventData)
         {
-            D.L("Down");
         }
 
         // 동일위치 클릭후 땠을때
         public void OnPointerUp(PointerEventData eventData)
         {
-            D.L("Up");
         }
     }
 }

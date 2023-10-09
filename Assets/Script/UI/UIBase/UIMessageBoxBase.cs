@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Script.Parameter.Enum;
 using UnityEngine;
 
 namespace Script.UI.UIBase
@@ -7,7 +8,9 @@ namespace Script.UI.UIBase
     {
         protected Tween m_OpenTween;
         protected Tween m_CloseTween;
-        
+
+        public override ECanvasType CanvasType => ECanvasType.UIMessageBox;
+
         protected virtual void OpenTween()
         {
             CreateActivateTween();

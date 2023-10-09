@@ -1,4 +1,4 @@
-namespace Script.EnumField
+namespace Script.Parameter.Enum
 {
     public enum ECanvasType
     {

@@ -1,6 +1,6 @@
 using System;
 using Script.Custom.Extensions;
-using Script.Obj;
+using Script.Obj.Build;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -9,12 +9,15 @@ namespace Script.Map.Parameters
     [System.Serializable]
     public class BattleMapParameter
     {
-        [SerializeField] private SpawnParameter[] m_SpawnArr = Array.Empty<SpawnParameter>();
-        [SerializeField] private BuildSlot[] m_BuildArr = Array.Empty<BuildSlot>();
+        [SerializeField] private Transform[] m_Way = null;
+        private BuildSlot[] m_BuildArr = Array.Empty<BuildSlot>();
 
-        public void Init(Transform root)
+        public Transform SpawnPoint => m_Way[0];
+        public Transform[] Way => m_Way;
+        
+        public void InitBuildPoint(Transform root)
         {
-            var _build = root.GetComponentsInChildren<BuildingModelBase>();
+            var _build = root.GetComponentsInChildren<BuildPoint>();
             if (!_build.IsNullOrEmptyCollection())
             {
                 var _len = _build.Length;
@@ -34,9 +37,7 @@ namespace Script.Map.Parameters
             {
                 buildParam.Clear();
                 GenericPool<BuildSlot>.Release(buildParam);
-            }
-
-            m_BuildArr = Array.Empty<BuildSlot>();
+            }  
         }
     }
 }

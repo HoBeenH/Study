@@ -8,6 +8,11 @@ namespace Script.Manager.CameraMgr
         [SerializeField] private CameraObject m_CameraObject = null;
         protected override void OnInit()
         {
+            if (m_CameraObject == null)
+            {
+                m_CameraObject = new CameraObject();
+                m_CameraObject.Root.transform.SetParent(transform);
+            }
         }
 
         protected override void OnClose()

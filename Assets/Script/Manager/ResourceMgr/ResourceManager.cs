@@ -4,6 +4,7 @@ using Script.Base.MonoSingleTone;
 using Script.Base.Pool;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 
@@ -30,7 +31,6 @@ namespace Script.Manager.ResourceMgr
 
         protected override void OnInit()
         {
-            Addressables.InitializeAsync().WaitForCompletion();
             var _go = new GameObject("Pool Root");
             m_PoolRoot = _go.transform;
             m_PoolRoot.localPosition = Vector3.zero;
@@ -48,6 +48,9 @@ namespace Script.Manager.ResourceMgr
             ClearMemory(false, false);
         }
 
+        public AsyncOperationHandle AwaitAddressable() =>
+            Addressables.InitializeAsync();
+        
         #region API
 
         #region Static
@@ -74,10 +77,11 @@ namespace Script.Manager.ResourceMgr
             Instance._LoadGO(path, onLoadComplete, _param);
         }    
         
-        public static void LoadCompAsync<T>(string path, Action<T> onLoadComplete, InstantiationParameters? paramOrNull = null) where T : Component
+        public static void LoadCompAsync<T>(string path, Action<T> onLoadComplete, InstantiationParameters? paramOrNull = null, bool enableValidCheck = true) where T : Component
         {
-            if (!IsValid(path, false))
-                return;
+            if (enableValidCheck)
+                if (!IsValid(path, false))
+                    return;
             
             var _param = new InstantiationParameters(null, true);
             if (paramOrNull.HasValue)
@@ -131,25 +135,42 @@ namespace Script.Manager.ResourceMgr
             return _obj;
         }        
         
-        public static T LoadPool<T>(string path) where T : PoolMonoObj
+        public static T LoadPool<T>(string path, bool isSync = true, Action<T> callback = null) where T : PoolMonoObj
         {
-            if (!IsValid(path, true))
-                return null;
+            if (isSync)
+                if (!IsValid(path, true))
+                    return null;
 
             var _poolDic = Instance.r_PoolDic;
 
             if (!_poolDic.TryGetValue(path, out var _poolBase))
             {
-                _poolBase = new Pool<T>(path);
+                if (isSync)
+                    _poolBase = new SyncPool<T>(path);
+                else
+                    _poolBase = new AsyncPool<T>(path);
+                
                 _poolDic.Add(path, _poolBase);
             }
 
-            if (_poolBase is Pool<T> _pool)
-                return _pool.GetObj();
+            switch (_poolBase)
+            {
+                case SyncPool<T> _syncPool:
+                    return _syncPool.GetObj();
+                case AsyncPool<T> _asyncPool:
+                    _asyncPool.GetObj(callback);
+                    return null;
+            }
 
             return null;
-        }
+        }   
 
+        public static void ReleaseObj<T>(T obj) => Addressables.Release(obj);
+
+        public static void ReleaseGO(GameObject go) => Addressables.ReleaseInstance(go);
+
+        public static void ReleaseGO(Component co) => ReleaseGO(co.gameObject);
+        
         #endregion
 
         private void LoadObj<T>(string path, Action<T> onLoadComplete) where T : UnityEngine.Object =>
@@ -225,11 +246,6 @@ namespace Script.Manager.ResourceMgr
             return null;
         }
 
-        public void ReleaseObj<T>(T obj) => Addressables.Release(obj);
-
-        public void ReleaseGO(GameObject go) => Addressables.ReleaseInstance(go);
-
-        public void ReleaseGO(Component co) => ReleaseGO(co.gameObject);
         
         #endregion //API
 

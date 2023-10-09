@@ -22,6 +22,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b6faa6fd7361164ca1a20e2647f7456
+    m_Address: Assets/Addressables/Prefab/UI/Popup/MessageBox/Popup_MessageBox.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - PreLoad
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: c2c40c81f49e0874a8f1070d322f53ba, type: 2}
   m_SchemaSet:

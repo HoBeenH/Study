@@ -1,15 +1,21 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Script.Base.MonoSingleTone;
 using Script.Custom.CustomEnum;
-using Script.EnumField;
+using Script.Custom.Extensions;
 using Script.Manager.ResourceMgr;
 using Script.Manager.TableMgr;
+using Script.Parameter.Enum;
 using Script.TableParser;
 using Script.UI.UIBase;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.EventSystems;
+using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 
 namespace Script.Manager.UIMgr
@@ -39,8 +45,6 @@ namespace Script.Manager.UIMgr
                 var _type = i.ToEnum<ECanvasType>();
                 r_DicCanvas.TryAdd(_type, new UICanvasInfo(transform, _type));
             }
-
-            EventSystem.current.IsPointerOverGameObject();
 
             DOTween.Init(false, false, LogBehaviour.Default);
         }
@@ -90,7 +94,6 @@ namespace Script.Manager.UIMgr
             
             ResourceManager.LoadCompAsync<T>(_tableData.Path, x =>
             {
-                x.SetID(id);
                 x.OnCreate();
                 r_DicUI.Add(id, x);
                 onLoadComplete.Invoke(x);
@@ -114,7 +117,7 @@ namespace Script.Manager.UIMgr
 
         public void OpenMessageBox<T>(EAddressableID id, [NotNull] Action<T> onLoadComplete) where T : UIMessageBoxBase
             => OpenUI(id, ECanvasType.UIMessageBox, onLoadComplete);
-
+        
         public void CloseUI<T>(T ui) where T : UIBase
         {
             if (!r_OpenUI.Contains(ui.AddressableID))
@@ -130,6 +133,42 @@ namespace Script.Manager.UIMgr
             foreach (var id in r_OpenUI)
                 if (r_DicUI.TryGetValue(id, out var _ui))
                     _ui.RefreshUI();
+        }
+
+        public IEnumerator AwaitPreLoad()
+        {
+            var _loadHandler = Addressables.LoadResourceLocationsAsync("PreLoad");
+            while (!_loadHandler.IsDone)
+                yield return null;
+
+            if (_loadHandler.Status != AsyncOperationStatus.Succeeded)
+                yield break;
+
+            var _set = _loadHandler.Result.ToHashSet();
+            foreach (var location in _loadHandler.Result)
+            {
+                var _param = new InstantiationParameters(r_DicCanvas[ECanvasType.UIMain].Root, false);
+                Addressables.InstantiateAsync(location, _param).Completed += ao =>
+                {
+                    if (ao.Status != AsyncOperationStatus.Succeeded)
+                        return;
+
+                    ao.Result.SetActive(false);
+                    if (!ao.Result.TryGetComponent(out UIBase _ui))
+                    {
+                        _set.Remove(location);
+                        return;
+                    }
+                
+                    _ui.OnCreate();
+                    _ui.RectTr.SetParent(r_DicCanvas[_ui.CanvasType].Root);
+                    r_DicUI.Add(_ui.AddressableID, _ui);
+                    _set.Remove(location);
+                };
+            }
+
+            while (_set.Count > 0)
+                yield return null;
         }
     }
 }

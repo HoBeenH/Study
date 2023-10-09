@@ -1,3 +1,4 @@
+using System.Collections;
 using Script.Manager.CameraMgr;
 using Script.Manager.GameMgr;
 using UnityEngine;
@@ -10,14 +11,15 @@ namespace Script.Map
         [SerializeField] private Transform m_Follow = null;
         [SerializeField] private Transform m_LookAt = null;
         
-        private void Awake()
+        private IEnumerator Start()
         {
-            OnInit();
+            yield return OnInit();
+            
             SetCameraProperty();
             LinkCurrentMap();
         }
 
-        protected abstract void OnInit();
+        public abstract IEnumerator OnInit();
 
         protected virtual void SetCameraProperty()
         {

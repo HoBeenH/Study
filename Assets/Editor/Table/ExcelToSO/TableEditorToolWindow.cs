@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using NPOI.SS.UserModel;
+using Script.Custom.CustomEnum;
 using Script.Table;
 using UnityEditor;
 using UnityEngine;
@@ -277,9 +278,9 @@ namespace Editor.Table.ExcelToSO
                     {
                         _targetFieldInfo.SetValue(_data, GetParsingData(_checkType, _newData));
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        Debug.LogError($"테이블 파서 에러 :: 데이터 형식이 테이블과 맞지 않습니다!  :: {_className} ::{_targetFieldInfo.Name}:: {_checkType}:: {_newData}");
+                        Debug.LogError($"테이블 파서 에러 :: 데이터 형식이 테이블과 맞지 않습니다!  :: {_className} ::{_targetFieldInfo.Name}:: {_checkType}:: {_newData}\n{e}");
                     }
                 }
 
@@ -396,7 +397,7 @@ namespace Editor.Table.ExcelToSO
             {
                 if (changeType == m_DataTypeArr[i])
                 {
-                    _dataType = (ECheckDataType)i;
+                    _dataType = i.ToEnum<ECheckDataType>();
                     break;
                 }
             }
@@ -406,9 +407,6 @@ namespace Editor.Table.ExcelToSO
                 if (Enum.TryParse(changeType, _checkData, out _result) == true)
                     return _result;
             }
-
-            if (_dataType is >= ECheckDataType.ArrayStart and <= ECheckDataType.ArrayEnd)
-                _checkData = _checkData.Remove(_checkData.Length - 1).Remove(0, 1);
 
             switch (_dataType)
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using Script.Custom.CustomEnum;
 using Script.Custom.Extensions;
-using Script.EnumField;
+using Script.Parameter.Enum;
 using Script.Table;
 
 namespace Script.TableParser

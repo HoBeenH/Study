@@ -1,10 +1,8 @@
 using System;
 using DG.Tweening;
-using JetBrains.Annotations;
-using Script.Custom.CustomDebug;
 using Script.Custom.CustomEnum;
-using Script.Manager.TableMgr;
-using Script.TableParser;
+using Script.Parameter.Enum;
+using Script.Parameter.Struct;
 using Script.UI.UIBase;
 using TMPro;
 using UnityEngine;
@@ -13,47 +11,6 @@ using UnityEngine.UI;
 
 namespace Script.UI.Popup_MessageBox
 {
-    [System.Flags]
-    public enum EMessageBoxBtnFlag
-    {
-        Ok,
-        Cancel,
-        Exit,
-        BG,
-        
-        OK_Cancel = Ok | Cancel,
-        OK_Cancel_BG = OK_Cancel | BG,
-        All = OK_Cancel_BG | Exit
-    }
-
-    public readonly struct MessageBoxParameter
-    {
-        public readonly string Title;
-        public readonly string Desc;
-        public readonly string Ok;
-        public readonly string Cancel;
-
-        public MessageBoxParameter(string title, string desc, string yes, string cancel) : this()
-        {
-            Title = GetKeyOrFallback(title, "Notice");
-            Desc = GetKeyOrFallback(desc, "!!- ERROR No Desc String");
-            Ok = GetKeyOrFallback(yes, "Yes");
-            Cancel = GetKeyOrFallback(cancel, "No");
-        }       
-        
-        public MessageBoxParameter(string desc) : this()
-        {
-            Title = TableManager.Instance.GetTableString("Notice");
-            Desc = GetKeyOrFallback(desc, "!!- ERROR No Desc String");
-            Ok = TableManager.Instance.GetTableString("Yes");
-            Cancel = TableManager.Instance.GetTableString("No");
-        }
-
-        private string GetKeyOrFallback(string key, string fallback) =>
-            string.IsNullOrEmpty(key) ? TableManager.Instance.GetTableString(fallback) : key;
-
-    }
-    
     public class Popup_MessageBox : UIMessageBoxBase
     {
         [Header("# Title")]
@@ -70,7 +27,9 @@ namespace Script.UI.Popup_MessageBox
 
         [Header("# Tween Target")] 
         [SerializeField] private Transform m_Target = null;
-        
+
+        public override EAddressableID AddressableID => EAddressableID.Popup_MessageBox;
+
         private void SetActivateButton(EMessageBoxBtnFlag btnFlag)
         {
             m_OkBtn.gameObject.SetActive(btnFlag.HasFlagFast(EMessageBoxBtnFlag.Ok));

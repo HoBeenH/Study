@@ -1,6 +1,6 @@
 using Script.Custom.CustomDebug;
-using Script.EnumField;
 using Script.Manager.UIMgr;
+using Script.Parameter.Enum;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,8 +12,9 @@ namespace Script.UI.UIBase
         [Header("# BG Btn")] 
         [SerializeField] private Button m_BtnBG = null;
 
-        public EAddressableID AddressableID { get; private set; }
-
+        public abstract EAddressableID AddressableID { get; }
+        public abstract ECanvasType CanvasType { get; }
+        
         public RectTransform RectTr
         {
             get
@@ -25,11 +26,6 @@ namespace Script.UI.UIBase
             }
         }
         private RectTransform m_rt = null;
-
-        public void SetID(EAddressableID id)
-        {
-            AddressableID = id;
-        } 
 
         public virtual void OnCreate() { }
 

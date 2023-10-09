@@ -1,8 +1,9 @@
 using System;
-using Script.EnumField;
 using Script.Manager.ResourceMgr;
 using Script.Manager.TableMgr;
 using Script.Manager.UIMgr;
+using Script.Parameter.Enum;
+using Script.Parameter.Struct;
 using Script.TableParser;
 using Script.UI.Popup_MessageBox;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Script.Obj.Build
     public class BuildPoint : BuildingModelBase
     {
         [Header("# Point GameObject")]
-        [SerializeField] protected GameObject m_DefaultGO = null;
+        [SerializeField] protected GameObject m_Flag = null;
 
         protected override void OnClick()
         {
@@ -36,6 +37,6 @@ namespace Script.Obj.Build
             });
         }
 
-        protected override Transform GetTweenTarget() => m_DefaultGO.transform;
+        protected override Transform GetTweenTarget() => m_Flag.transform;
     }
 }

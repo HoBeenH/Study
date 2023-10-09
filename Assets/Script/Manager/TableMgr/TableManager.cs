@@ -3,6 +3,8 @@ using Script.Manager.ResourceMgr;
 using Script.Table;
 using Script.TableParser;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Script.Manager.TableMgr
 {
@@ -20,17 +22,22 @@ namespace Script.Manager.TableMgr
 
         public string GetTableString(string key, params object[] param) =>
             GetTable<StringTable>().GetTableString(key, param);
-      
-
+        
         public string GetTableString(string key) => GetTableString(key, null);
 
+        public AsyncOperationHandle AwaitTableLoad()
+        {
+            var _handle = Addressables.LoadAssetAsync<TableScriptObject>(TableScriptObject.ADDRESSABLE_PATH);
+            _handle.Completed += (data) =>
+            {
+                m_TableObj = data.Result;
+                m_TableObj.AllOnLoadCompleteCall();
+            };
+            return _handle;
+        }
+        
         protected override void OnInit()
         {
-            ResourceManager.LoadObjAsync<TableScriptObject>(TableScriptObject.ADDRESSABLE_PATH, _tableObj =>
-            {
-                m_TableObj = _tableObj;
-                m_TableObj.AllOnLoadCompleteCall();
-            });
         }
 
         protected override void OnClose()

@@ -23,7 +23,7 @@ namespace Script.Custom.Extensions
             if (list == null)
                 return false;
 
-            return idx <= 0 && list.Count > idx;
+            return idx >= 0 && list.Count > idx;
         }
 
     }
